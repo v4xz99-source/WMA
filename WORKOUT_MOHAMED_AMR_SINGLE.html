@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WORKOUT MOHAMED-AMR</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#080808;color:#f5f5f5;font-family:Arial,Tahoma,sans-serif}
+.top{height:64px;border-bottom:1px solid #252525;display:flex;align-items:center;justify-content:space-between;padding:0 18px;background:#090909;position:sticky;top:0;z-index:5}
+.brand{font-weight:900;letter-spacing:1px}.brand span{color:#888}.wrap{max-width:1100px;margin:auto;padding:20px}.center{min-height:100vh;display:grid;place-items:center;padding:20px}
+.card{background:#111;border:1px solid #292929;border-radius:18px;padding:20px;margin-bottom:18px;box-shadow:0 12px 35px #0007}
+.login{width:min(440px,100%);text-align:center}.input,textarea{width:100%;background:#0b0b0b;color:#fff;border:1px solid #333;border-radius:10px;padding:12px;margin:6px 0;outline:0}.input:focus,textarea:focus{border-color:#777}
+.btn{border:1px solid #333;background:#191919;color:#fff;border-radius:10px;padding:10px 15px;cursor:pointer}.primary{background:#eee;color:#080808;border-color:#eee}.danger{color:#ff9999;border-color:#542525}.small{padding:7px 10px;font-size:13px}.muted{color:#929292}.error{color:#ff8d8d;min-height:20px}
+.grid{display:grid;gap:18px}.two{grid-template-columns:1fr 1fr}.four{grid-template-columns:repeat(4,1fr);gap:7px}.head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.list{width:100%;display:block;text-align:right;background:#0b0b0b;color:#fff;border:1px solid #292929;border-radius:10px;padding:12px;margin:6px 0}.list small{display:block;color:#888;margin-top:4px}
+.day{border-top:1px solid #292929;padding-top:14px;margin-top:14px}.exercise{background:#0b0b0b;border:1px solid #252525;border-radius:12px;padding:13px;margin:9px 0}.title{font-size:17px;font-weight:800;margin-bottom:9px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.stats span{background:#151515;border-radius:8px;padding:8px;text-align:center;color:#999;font-size:12px}.stats b{display:block;color:#fff;font-size:14px;margin-top:3px}
+.edit{background:#0b0b0b;border:1px solid #292929;border-radius:12px;padding:12px;margin:10px 0}.actions{display:flex;gap:8px;margin-top:8px}.watermark{position:fixed;bottom:9px;right:10px;color:#fff2;font-size:11px;z-index:10;pointer-events:none}
+dialog{background:#111;color:#fff;border:1px solid #333;border-radius:16px;padding:20px;width:min(440px,92vw)}dialog::backdrop{background:#000b}
+@media(max-width:700px){.two{grid-template-columns:1fr}.four{grid-template-columns:1fr 1fr}.stats{grid-template-columns:1fr 1fr}.wrap{padding:12px}.card{padding:14px}}
+</style>
+</head>
+<body>
+<header class="top"><div class="brand">WORKOUT <span>MOHAMED-AMR</span></div><button id="logout" class="btn">خروج</button></header>
+<main id="clientPage" class="center"><section class="card login">
+<div class="brand">WORKOUT <span>MOHAMED-AMR</span></div><h1>خطتك التدريبية</h1><p class="muted">اكتب الكود الخاص بك للدخول.</p>
+<input id="code" class="input" placeholder="مثال: NXR-MOH-48291"><button id="enter" class="btn primary" style="width:100%">دخول</button><p id="clientErr" class="error"></p>
+<a href="?admin=1" style="color:#777;font-size:12px;text-decoration:none">Admin</a>
+</section></main>
+
+<main id="adminPage" class="wrap" hidden>
+<section id="loginBox" class="card" style="max-width:500px;margin:30px auto"><h1>Admin Login</h1>
+<input id="email" class="input" type="email" placeholder="Email"><input id="pass" class="input" type="password" placeholder="Password">
+<button id="adminLogin" class="btn primary" style="width:100%">دخول</button><p id="adminErr" class="error"></p></section>
+<section id="dashboard" hidden><div class="grid two">
+<section class="card"><div class="head"><h2>العملاء</h2><button id="addClient" class="btn small">+ عميل</button></div><div id="clients"></div></section>
+<section class="card"><div class="head"><h2>الخطة</h2><button id="addPlan" class="btn small">+ خطة</button></div><div id="plans" class="muted">اختار عميل.</div></section></div>
+<section id="editor" class="card" hidden><div class="head"><h2>الأيام والتمارين</h2><button id="addDay" class="btn small">+ يوم</button></div><div id="days"></div></section></section>
+</main>
+<div id="viewer" class="wrap" hidden><div id="content"></div><p id="viewErr" class="error"></p></div>
+<div class="watermark">WORKOUT MOHAMED-AMR</div>
+
+<dialog id="clientDlg"><form method="dialog"><h3>إضافة عميل</h3><input id="cn" class="input" placeholder="اسم العميل"><input id="cc" class="input" placeholder="كود العميل"><p><label><input id="ca" type="checkbox" checked> نشط</label></p><div class="actions"><button class="btn">إلغاء</button><button id="saveC" class="btn primary">حفظ</button></div></form></dialog>
+<dialog id="planDlg"><form method="dialog"><h3>إضافة خطة</h3><input id="pt" class="input" placeholder="اسم الخطة"><textarea id="pd" class="input" placeholder="وصف الخطة"></textarea><div class="actions"><button class="btn">إلغاء</button><button id="saveP" class="btn primary">حفظ</button></div></form></dialog>
+<dialog id="dayDlg"><form method="dialog"><h3>إضافة يوم</h3><input id="dn" class="input" placeholder="مثال: Push / Chest"><input id="do" class="input" type="number" value="1" min="1"><div class="actions"><button class="btn">إلغاء</button><button id="saveD" class="btn primary">حفظ</button></div></form></dialog>
+
+<script type="module">
+import{createClient}from'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+const sb=createClient('https://ckfmhpppzatvbuhvjnzn.supabase.co','sb_publishable_PMdDws1AOZL5etV9Q1_E3g_m34LlUZi');
+const $=x=>document.querySelector(x), admin=new URLSearchParams(location.search).has('admin');
+$('clientPage').hidden=admin;$('adminPage').hidden=!admin;$('logout').hidden=!admin;
+function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+$('enter').onclick=async()=>{let c=$('#code').value.trim();$('#clientErr').textContent='';if(!c)return $('#clientErr').textContent='اكتب الكود أولاً.';let{data,error}=await sb.rpc('get_client_plan',{input_code:c});if(error||!data?.length)return $('#clientErr').textContent='الكود غير صحيح أو الخطة غير متاحة.';sessionStorage.setItem('client_code',c);showPlan(data)};
+function showPlan(data){$('clientPage').hidden=true;$('viewer').hidden=false;$('logout').hidden=false;let plans={};for(let r of data){if(!plans[r.plan_id])plans[r.plan_id]={title:r.plan_title,description:r.plan_description,days:{}};if(r.day_id){if(!plans[r.plan_id].days[r.day_id])plans[r.plan_id].days[r.day_id]={name:r.day_name,order:r.day_order,ex:[]};if(r.exercise_id)plans[r.plan_id].days[r.day_id].ex.push(r)}}let h=`<section class="card"><p class="muted">العميل</p><h1>${esc(data[0].client_name)}</h1></section>`;for(let p of Object.values(plans)){h+=`<section class="card"><h2>${esc(p.title)}</h2><p class="muted">${esc(p.description||'')}</p>`;for(let d of Object.values(p.days).sort((a,b)=>a.order-b.order)){h+=`<div class="day"><h3>${esc(d.name)}</h3>`;for(let e of d.ex.sort((a,b)=>a.exercise_order-b.exercise_order))h+=`<article class="exercise"><div class="title">${esc(e.exercise_name)}</div><div class="stats"><span>Sets:<b>${esc(e.sets||'-')}</b></span><span>Reps:<b>${esc(e.reps||'-')}</b></span><span>Weight:<b>${esc(e.weight||'-')}</b></span><span>Rest:<b>${esc(e.rest||'-')}</b></span></div>${e.tempo?`<div class="muted">Tempo: ${esc(e.tempo)}</div>`:''}${e.notes?`<div class="muted">${esc(e.notes)}</div>`:''}</article>`;h+='</div>'}h+='</section>'}$('#content').innerHTML=h}
+document.addEventListener('contextmenu',e=>e.preventDefault());document.addEventListener('copy',e=>e.preventDefault());document.addEventListener('dragstart',e=>e.preventDefault());
+$('logout').onclick=async()=>{await sb.auth.signOut();sessionStorage.clear();location.href='index.html'};
+let client=null,plan=null;
+$('adminLogin').onclick=async()=>{let{error}=await sb.auth.signInWithPassword({email:$('#email').value.trim(),password:$('#pass').value});if(error)return $('#adminErr').textContent='الإيميل أو الباسورد غير صحيح.';start()};
+async function start(){$('#loginBox').hidden=true;$('#dashboard').hidden=false;$('logout').hidden=false;loadClients()}
+(async()=>{if(admin){let{data:{session}}=await sb.auth.getSession();if(session)start()}})();
+$('addClient').onclick=()=>$('#clientDlg').showModal();$('saveC').onclick=async e=>{e.preventDefault();let{error}=await sb.from('clients').insert({name:$('#cn').value.trim(),client_code:$('#cc').value.trim(),active:$('#ca').checked});if(error)return alert(error.message);$('#clientDlg').close();loadClients()};
+async function loadClients(){let{data,error}=await sb.from('clients').select('*').order('created_at',{ascending:false});if(error)return alert(error.message);$('#clients').innerHTML='';data.forEach(c=>{let b=document.createElement('button');b.className='list';b.innerHTML=`<b>${esc(c.name)}</b><small>${esc(c.client_code)} • ${c.active?'نشط':'غير نشط'}</small>`;b.onclick=()=>{client=c;plan=null;loadPlans()};$('#clients').append(b)})}
+$('addPlan').onclick=()=>client?$('#planDlg').showModal():alert('اختار عميل أولاً.');$('saveP').onclick=async e=>{e.preventDefault();let{error}=await sb.from('workout_plans').insert({client_id:client.id,title:$('#pt').value.trim(),description:$('#pd').value.trim(),active:true});if(error)return alert(error.message);$('#planDlg').close();loadPlans()};
+async function loadPlans(){$('#editor').hidden=true;$('#plans').innerHTML='';let{data,error}=await sb.from('workout_plans').select('*').eq('client_id',client.id);if(error)return alert(error.message);if(!data.length)return $('#plans').innerHTML='<p class="muted">لا توجد خطة.</p>';data.forEach(p=>{let b=document.createElement('button');b.className='list';b.innerHTML=`<b>${esc(p.title)}</b><small>${esc(p.description||'')}</small>`;b.onclick=()=>{plan=p;loadDays()};$('#plans').append(b)})}
+$('addDay').onclick=()=>plan?$('#dayDlg').showModal():alert('اختار خطة أولاً.');$('saveD').onclick=async e=>{e.preventDefault();let{error}=await sb.from('workout_days').insert({plan_id:plan.id,name:$('#dn').value.trim(),day_order:+$('#do').value||1});if(error)return alert(error.message);$('#dayDlg').close();loadDays()};
+async function loadDays(){$('#editor').hidden=false;let{data,error}=await sb.from('workout_days').select('*').eq('plan_id',plan.id).order('day_order');if(error)return alert(error.message);$('#days').innerHTML='';for(let d of data){let w=document.createElement('div');w.className='day';w.innerHTML=`<div class="head"><h3>${esc(d.name)}</h3><button class="btn danger small">حذف اليوم</button></div><div class="ex"></div><button class="btn small add">+ تمرين</button>`;w.querySelector('.danger').onclick=async()=>{if(confirm('حذف اليوم؟')){await sb.from('workout_days').delete().eq('id',d.id);loadDays()}};w.querySelector('.add').onclick=()=>addEx(w.querySelector('.ex'),d.id);$('#days').append(w);await renderEx(w.querySelector('.ex'),d.id)}}
+async function renderEx(c,id){let{data,error}=await sb.from('exercises').select('*').eq('day_id',id).order('exercise_order');if(error)return alert(error.message);c.innerHTML='';data.forEach(x=>c.append(editEx(x,id,false)))}
+function addEx(c,id){c.append(editEx({name:'',sets:'',reps:'',weight:'',rest:'',tempo:'',notes:'',exercise_order:999},id,true))}
+function editEx(x,id,n){let e=document.createElement('div');e.className='edit';e.innerHTML=`<input class="input n" placeholder="اسم التمرين" value="${esc(x.name)}"><div class="grid four"><input class="input s" placeholder="Sets" value="${esc(x.sets)}"><input class="input r" placeholder="Reps" value="${esc(x.reps)}"><input class="input w" placeholder="Weight" value="${esc(x.weight)}"><input class="input z" placeholder="Rest" value="${esc(x.rest)}"></div><input class="input t" placeholder="Tempo" value="${esc(x.tempo)}"><textarea class="input no" placeholder="Notes">${esc(x.notes||'')}</textarea><div class="actions"><button class="btn primary small save">${n?'إضافة':'حفظ'}</button>${n?'':'<button class="btn danger small del">حذف</button>'}</div>`;e.querySelector('.save').onclick=async()=>{let p={day_id:id,name:e.querySelector('.n').value.trim(),sets:e.querySelector('.s').value.trim(),reps:e.querySelector('.r').value.trim(),weight:e.querySelector('.w').value.trim(),rest:e.querySelector('.z').value.trim(),tempo:e.querySelector('.t').value.trim(),notes:e.querySelector('.no').value.trim(),exercise_order:x.exercise_order||999};let q=n?await sb.from('exercises').insert(p):await sb.from('exercises').update(p).eq('id',x.id);if(q.error)alert(q.error.message);else renderEx(e.parentElement,id)};if(!n)e.querySelector('.del').onclick=async()=>{if(confirm('حذف التمرين؟')){let q=await sb.from('exercises').delete().eq('id',x.id);if(q.error)alert(q.error.message);else renderEx(e.parentElement,id)}};return e}
+</script></body></html>
